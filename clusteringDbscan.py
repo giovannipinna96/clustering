@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from sklearn.cluster import DBSCAN
+
 from Data import create_moons
 from plotUtils import plot_two_clusters
 

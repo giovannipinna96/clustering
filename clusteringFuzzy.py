@@ -1,8 +1,9 @@
 import matplotlib.pyplot as plt
-from fcmeans import FCM
-from Data import create_blob
-from plotUtils import plot_two_clusters, plot_blob, plot_three_clusters
 import numpy as np
+from fcmeans import FCM
+
+from Data import create_blob
+from plotUtils import plot_blob, plot_three_clusters
 
 X, _ = create_blob()
 plot_blob(X)

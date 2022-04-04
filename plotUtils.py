@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib import cm
 from sklearn.metrics import silhouette_samples
-import numpy as np
 
 
 def plot_blob(X, c='white', edgecolor='black', s=50):

@@ -1,5 +1,6 @@
-from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+
 from Data import create_blob
 from plotUtils import plot_blob, plot_three_clusters
 

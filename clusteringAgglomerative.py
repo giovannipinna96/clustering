@@ -1,7 +1,8 @@
+import matplotlib.pyplot as plt
 from sklearn.cluster import AgglomerativeClustering
+
 from Data import create_blob
 from plotUtils import plot_three_clusters
-import matplotlib.pyplot as plt
 
 X, _ = create_blob()
 
