@@ -1,59 +1,46 @@
 import matplotlib.pyplot as plt
-from matplotlib.colors import ListedColormap
-import matplotlib
-from distutils.version import LooseVersion
-
+from matplotlib import cm
+from sklearn.metrics import silhouette_samples
 import numpy as np
 
 
-def plot_decision_regions(X, y, classifier, resolution=0.02, test_idx=range(105, 150)):
-    # setup marker generator and color map
-    markers = ('s', 'o', 'x', '^', 'v')
-    colors = ('red', 'blue', 'lightgreen', 'gray', 'cyan')
-    cmap = ListedColormap(colors[:len(np.unique(y))])
+def plot_blob(X, c='white', edgecolor='black', s=50):
+    plt.scatter(X[:, 0], X[:, 1], c=c, marker='o', edgecolor=edgecolor, s=s)
+    plt.grid()
+    plt.tight_layout()
 
-    # plot the decision surface
-    x1_min, x1_max = X[:, 0].min() - 1, X[:, 0].max() + 1
-    x2_min, x2_max = X[:, 1].min() - 1, X[:, 1].max() + 1
-    xx1, xx2 = np.meshgrid(np.arange(x1_min, x1_max, resolution),
-                           np.arange(x2_min, x2_max, resolution))
-    Z = classifier.predict(np.array([xx1.ravel(), xx2.ravel()]).T)
-    Z = Z.reshape(xx1.shape)
-    plt.contourf(xx1, xx2, Z, alpha=0.3, cmap=cmap)
-    plt.xlim(xx1.min(), xx1.max())
-    plt.ylim(xx2.min(), xx2.max())
 
-    # plot class examples
-    for idx, cl in enumerate(np.unique(y)):
-        plt.scatter(x=X[y == cl, 0],
-                    y=X[y == cl, 1],
-                    alpha=0.8,
-                    c=colors[idx],
-                    marker=markers[idx],
-                    label=cl,
-                    edgecolor='black')
+def plot_three_clusters(X, y_km):
+    plt.scatter(X[y_km == 0, 0], X[y_km == 0, 1], c='lightgreen', marker='s', edgecolor='black', s=50, label='Cluster1')
+    plt.scatter(X[y_km == 1, 0], X[y_km == 1, 1], c='orange', marker='o', edgecolor='black', s=50, label='Cluster2')
+    plt.scatter(X[y_km == 2, 0], X[y_km == 2, 1], c='lightblue', marker='v', edgecolor='black', s=50, label='Cluster3')
+    plt.grid()
+    plt.tight_layout()
 
-    if test_idx:
-        # plot all examples
-        X_test, y_test = X[test_idx, :], y[test_idx]
 
-        if LooseVersion(matplotlib.__version__) < LooseVersion('0.3.4'):
-            plt.scatter(X_test[:, 0],
-                        X_test[:, 1],
-                        c='',
-                        edgecolor='black',
-                        alpha=1.0,
-                        linewidth=1,
-                        marker='o',
-                        s=100,
-                        label='test set')
-        else:
-            plt.scatter(X_test[:, 0],
-                        X_test[:, 1],
-                        c='none',
-                        edgecolor='black',
-                        alpha=1.0,
-                        linewidth=1,
-                        marker='o',
-                        s=100,
-                        label='test set')
+def plot_two_clusters(X, y):
+    plt.scatter(X[y == 0, 0], X[y == 0, 1], c='lightgreen', marker='s', edgecolor='black', s=50, label='Cluster1')
+    plt.scatter(X[y == 1, 0], X[y == 1, 1], c='orange', marker='o', edgecolor='black', s=50, label='Cluster2')
+    plt.grid()
+    plt.tight_layout()
+
+
+def plot_silhouette(X, y_km):
+    cluster_labels = np.unique(y_km)
+    n_clusters = cluster_labels.shape[0]
+    silhouette_vals = silhouette_samples(X, y_km, metric='euclidean')
+    y_ax_lower, y_ax_upper = 0, 0
+    yticks = []
+    for i, c in enumerate(cluster_labels):
+        c_silhouette_vals = silhouette_vals[y_km == c]
+        c_silhouette_vals.sort()
+        y_ax_upper += len(c_silhouette_vals)
+        color = cm.jet(float(i) / n_clusters)
+        plt.barh(range(y_ax_lower, y_ax_upper), c_silhouette_vals, height=1.0,
+                 edgecolor='none', color=color)
+
+        yticks.append((y_ax_lower + y_ax_upper) / 2.)
+        y_ax_lower += len(c_silhouette_vals)
+    silhouette_avg = np.mean(silhouette_vals)
+    plt.axvline(silhouette_avg, color="red", linestyle="--")
+    plt.yticks(yticks, cluster_labels + 1)
