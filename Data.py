@@ -1,7 +1,7 @@
 from sklearn.datasets import make_blobs
 from sklearn.datasets import make_moons
-from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
 
 def create_blob(n_sample=150, n_features=2, centers=3, cluster_std=0.5, shuffle=True, random_state=1):
